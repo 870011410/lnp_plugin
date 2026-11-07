@@ -165,13 +165,17 @@ export default function PluginManagerPage(): ReactElement {
             <DropdownMenuContent align='end'>
               <DropdownMenuGroup>
                 <DropdownMenuItem
-                  disabled={unavailable || !item.canBuild}
+                  disabled={unavailable}
                   onClick={() => {
                     void start({ pluginId: item.id, action: 'pack' });
                   }}
                 >
                   <Package />
-                  {t('pluginManager.pack')}
+                  {t(
+                    item.canBuild
+                      ? 'pluginManager.pack'
+                      : 'pluginManager.packOnly',
+                  )}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -203,7 +207,12 @@ export default function PluginManagerPage(): ReactElement {
     {
       accessorKey: 'action',
       header: t('pluginManager.operation'),
-      cell: ({ row }) => t(`pluginManager.${row.original.action}`),
+      cell: ({ row }) =>
+        t(
+          row.original.action === 'pack'
+            ? 'pluginManager.packOnly'
+            : 'pluginManager.publish',
+        ),
     },
     {
       accessorKey: 'status',

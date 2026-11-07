@@ -317,8 +317,7 @@ export class PluginManager {
       )
         throw new PluginManagerError('ARTIFACT_REQUIRED');
       await this.assertHosted();
-    } else if (!plugin.canBuild)
-      throw new PluginManagerError('BUILD_SCRIPT_REQUIRED');
+    }
     const registry =
       input.action === 'publish'
         ? validRegistry(this.config.registry)
@@ -434,24 +433,31 @@ export class PluginManager {
     );
     if (!plugin || plugin.name !== run.name || plugin.version !== run.version)
       throw new PluginManagerError('SOURCE_CHANGED');
-    run.status = 'building';
-    await this.save(run);
-    try {
-      await this.process('pnpm', ['run', 'build'], { cwd, signal });
-    } catch {
-      throw new PluginManagerError(
-        signal?.aborted ? 'INTERRUPTED' : 'BUILD_FAILED',
-      );
+    if (plugin.canBuild) {
+      run.status = 'building';
+      await this.save(run);
+      try {
+        await this.process('pnpm', ['run', 'build'], { cwd, signal });
+      } catch {
+        throw new PluginManagerError(
+          signal?.aborted ? 'INTERRUPTED' : 'BUILD_FAILED',
+        );
+      }
     }
     run.status = 'packing';
     await this.save(run);
     await this.process(
       'pnpm',
-      ['pack', '--pack-destination', this.runDir(run.id), '--json'],
+      [
+        'pack',
+        '--pack-destination',
+        this.runDir(run.id),
+        '--json',
+        '--config.ignore-scripts=true',
+      ],
       {
         cwd,
         signal,
-        env: { ...process.env, npm_config_ignore_scripts: 'true' },
       },
     );
     const files = (await readdir(this.runDir(run.id))).filter((file) =>
@@ -506,19 +512,25 @@ export class PluginManager {
     } catch {
       throw new PluginManagerError('INVALID_ARTIFACT');
     }
-    const targets = (value: unknown): string[] =>
+    const targets = (value: unknown, includeTypes = true): string[] =>
       typeof value === 'string'
         ? [value]
         : value && typeof value === 'object'
-          ? Object.values(value).flatMap(targets)
+          ? Object.entries(value).flatMap(([condition, target]) =>
+              condition === 'types' && !includeTypes
+                ? []
+                : targets(target, includeTypes),
+            )
           : [];
     const exports = targets(metadata.exports);
     const runtime = ['client', 'server', 'cli'].flatMap((key) =>
-      targets(metadata.exports?.[`./${key}`]),
+      targets(metadata.exports?.[`./${key}`], false),
     );
     if (
       !runtime.length ||
-      runtime.some((target) => !target.startsWith('./dist/')) ||
+      // Precompiled ESM/CJS packages may keep their public files in server/ rather than dist/.
+      // Only JavaScript runtime entries are publishable; declaration targets are checked separately below.
+      runtime.some((target) => !/\.(?:js|mjs|cjs)$/.test(target)) ||
       exports.some(
         (target) =>
           !target.startsWith('./') ||

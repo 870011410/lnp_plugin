@@ -171,6 +171,24 @@ describe('plugin manager page', () => {
     );
   });
 
+  it('allows packaging an already compiled plugin without a build script', async () => {
+    plugins = [{ ...plugin, canBuild: false }];
+    await renderPage();
+    await userEvent.click(
+      await screen.findByRole('button', { name: `Actions for ${plugin.name}` }),
+    );
+    const action = await screen.findByRole('menuitem');
+    expect(action).not.toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(action);
+    await waitFor(() =>
+      expect(api).toHaveBeenCalledWith({
+        method: 'POST',
+        path: 'pluginManager/runs',
+        json: { pluginId: plugin.id, action: 'pack' },
+      }),
+    );
+  });
+
   it('explains forbidden access without a retry', async () => {
     failure = Response.json(
       { error: { message: 'Forbidden' } },

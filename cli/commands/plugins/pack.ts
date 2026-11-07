@@ -3,7 +3,7 @@ import ReleaseCommand from './lib/release.js';
 
 export default class PackPlugin extends ReleaseCommand {
   static override summary =
-    'Build and pack a local plugin into an immutable npm tarball.';
+    'Build when configured and pack a local plugin into an immutable npm tarball.';
   static override args = {
     plugin: Args.string({
       required: true,

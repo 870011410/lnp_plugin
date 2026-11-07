@@ -11,7 +11,7 @@ const pluginManager = {
     'Publishing uses the server user’s npm login. If authentication fails, sign in to this hosted repository on the server.',
   localPlugins: 'Local plugins',
   sourceHint:
-    'Plugins in this application’s packages directory. Build before publishing; private packages can be packed but must be made publishable before upload.',
+    'Plugins in this application’s packages directory. Source plugins are built before packing; precompiled JavaScript plugins are packed directly. Private packages must be made publishable before upload.',
   empty:
     'No local NocoBase 3 plugins yet. Add a plugin to packages, then refresh.',
   plugin: 'Plugin',
@@ -24,6 +24,7 @@ const pluginManager = {
   downloadFor: 'Download {{name}}',
   capability: { client: 'Client', server: 'Server', cli: 'CLI' },
   pack: 'Build and pack',
+  packOnly: 'Pack',
   publish: 'Publish',
   refresh: 'Refresh',
   retry: 'Retry original request',
@@ -81,7 +82,7 @@ const pluginManager = {
       'The archive is invalid or contains credentials, links or unsupported package files.',
     ARTIFACT_TOO_LARGE: 'The package exceeds the 100 MB upload limit.',
     MISSING_BUILD_OUTPUT:
-      'The archive must export existing compiled files under dist. Check files and publishConfig.exports.',
+      'The archive must contain every exported file, with JavaScript runtime entries. Build TypeScript sources first and check files and publishConfig.exports.',
     PRIVATE_PACKAGE:
       'The packed manifest is private. Set private to false, then build a new package before publishing.',
     AUTHENTICATION_FAILED:

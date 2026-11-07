@@ -83,4 +83,25 @@ describe('plugin manager commands', () => {
       error: { code: 'PLUGIN_NOT_FOUND' },
     });
   });
+
+  it('previews packaging a precompiled plugin without a build script', async () => {
+    const { root, options } = await fixture();
+    await writeFile(
+      path.join(root, 'packages/example/package.json'),
+      JSON.stringify({
+        name: '@lnp/app-plugin-example',
+        version: '1.0.0',
+        exports: { './server': './server/index.js' },
+      }),
+    );
+    const result = await runAppCommand(
+      bindAppCommand(PackPlugin, { ...options, id: 'app:plugins:pack' }),
+      ['example', '--dry-run', '--json'],
+    );
+    expect(result.json()).toMatchObject({
+      ok: true,
+      status: 'success-noop',
+      result: { action: 'pack' },
+    });
+  });
 });

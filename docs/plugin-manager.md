@@ -1,13 +1,13 @@
 # 自开发插件管理
 
-管理员访问“系统设置 → 系统 → 插件管理”。仅无限制管理员可访问页面和 API。插件源码放在应用 `packages/<目录名>/` 中，包名使用 `app-plugin-*` 或 `@scope/app-plugin-*`，并声明 NocoBase 3 的 `./client`、`./server` 或 `./cli` exports 和 `build` 脚本。使用项目内插件开发 Skill 和 `pnpm create @nocobase/plugin@beta` 创建插件；本功能不会自动执行安装、注册或启用插件。
+管理员访问“系统设置 → 系统 → 插件管理”。仅无限制管理员可访问页面和 API。插件放在应用 `packages/<目录名>/` 中，包名使用 `app-plugin-*` 或 `@scope/app-plugin-*`，并声明 NocoBase 3 的 `./client`、`./server` 或 `./cli` exports。源码插件提供 `build` 脚本，已编译的 JavaScript 插件可直接打包。使用项目内插件开发 Skill 和 `pnpm create @nocobase/plugin@beta` 创建插件；本功能不会自动执行安装、注册或启用插件。
 
 1. 将插件放入 `packages/`，安装其依赖，刷新列表。
-2. 从插件行的操作菜单选择“构建并打包”。后台执行 `pnpm run build`，然后执行禁用生命周期脚本的 `pnpm pack`。
+2. 源码插件选择“构建并打包”，后台先执行 `pnpm run build`；没有 `build` 脚本的已编译插件选择“打包”，直接执行禁用生命周期脚本的 `pnpm pack`，不需要添加空的 build 脚本。
 3. 在发布记录中下载成功的 `.tgz`，或点击“发布”确认名称、版本和目标仓库。上传校验并复用原归档，不重新构建。
 4. 新版本需先修改插件版本号再打包。打包允许 `private: true`，发布要求归档中的 `private` 为 false；修改后需要重新打包。
 
-打包产物必须包含 exports 指向的文件，运行时导出必须指向 `dist/`。推荐在 `publishConfig.exports` 中声明编译后的导出，在 `files` 中仅包含发布文件。归档中禁止 `.npmrc`、`.env*`、`config.yml`、`node_modules` 和符号链接，压缩包上限为 100 MB。失败记录显示可操作的错误原因，构建输出不会发送到浏览器或写入任务 JSON；构建失败时在插件目录运行 `pnpm run build` 查看详细编译输出。
+打包产物必须包含全部 exports 指向的文件，运行时导出需指向 `.js`、`.mjs` 或 `.cjs` 文件，类型声明也必须存在。源码插件推荐在 `publishConfig.exports` 中声明 `dist/` 下编译后的导出，在 `files` 中仅包含发布文件；已编译包也支持 `server/index.js` 等现有目录结构。打包不会验证插件与当前应用的 peerDependencies 兼容性；安装注册前需另行确认。归档中禁止 `.npmrc`、`.env*`、`config.yml`、`node_modules` 和符号链接，压缩包上限为 100 MB。失败记录显示可操作的错误原因，构建输出不会发送到浏览器或写入任务 JSON；构建失败时在插件目录运行 `pnpm run build` 查看详细编译输出。
 
 ## Nexus 配置与认证
 

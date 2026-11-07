@@ -114,6 +114,53 @@ describe('local plugin releases', () => {
     });
   }, 30_000);
 
+  it('packs an already compiled JavaScript plugin without a build script', async () => {
+    const { plugin, manager } = await fixture({
+      scripts: { prepack: 'node -e "process.exit(1)"' },
+      files: ['server'],
+      exports: {
+        './server': {
+          types: './server/index.d.ts',
+          import: './server/index.js',
+        },
+      },
+      publishConfig: undefined,
+    });
+    await mkdir(path.join(plugin, 'server'));
+    await writeFile(path.join(plugin, 'server/index.js'), 'export default {};');
+    await writeFile(
+      path.join(plugin, 'server/index.d.ts'),
+      'declare const plugin: {}; export default plugin;',
+    );
+    expect(await manager.plugins()).toMatchObject([{ canBuild: false }]);
+    const { run } = await manager.create(
+      { pluginId: 'fixture', action: 'pack' },
+      key(),
+    );
+    await manager.execute(run.id);
+    expect(await manager.run(run.id)).toMatchObject({
+      status: 'succeeded',
+      artifact: { filename: expect.stringMatching(/\.tgz$/) },
+    });
+    expect((await manager.download(run.id)).size).toBeGreaterThan(0);
+  }, 30_000);
+
+  it('rejects an unbuilt package without a build script', async () => {
+    const { manager } = await fixture({
+      scripts: {},
+      publishConfig: undefined,
+    });
+    const { run } = await manager.create(
+      { pluginId: 'fixture', action: 'pack' },
+      key(),
+    );
+    await manager.execute(run.id);
+    expect(await manager.run(run.id)).toMatchObject({
+      status: 'failed',
+      reason: 'MISSING_BUILD_OUTPUT',
+    });
+  }, 30_000);
+
   it('publishes the same tarball using the real npm protocol with path-scoped credentials', async () => {
     const { root, manager: packing } = await fixture();
     const packed = await packing.create(

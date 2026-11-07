@@ -12,7 +12,7 @@ const pluginManager: { [K in keyof typeof enUS]: (typeof enUS)[K] } = {
     '发布使用服务端当前用户的 npm 登录信息。若认证失败，请在服务端登录此 hosted 仓库。',
   localPlugins: '本地插件',
   sourceHint:
-    '管理当前应用 packages 目录中的插件。发布前先构建打包；私有插件可以打包，上传前需允许发布并重新打包。',
+    '管理当前应用 packages 目录中的插件。源码插件先构建再打包；已编译的 JavaScript 插件可直接打包。私有插件上传前需允许发布并重新打包。',
   empty: '暂无本地 NocoBase 3 插件。将插件加入 packages 目录后刷新。',
   plugin: '插件',
   version: '版本',
@@ -24,6 +24,7 @@ const pluginManager: { [K in keyof typeof enUS]: (typeof enUS)[K] } = {
   downloadFor: '下载 {{name}}',
   capability: { client: '客户端', server: '服务端', cli: '命令行' },
   pack: '构建并打包',
+  packOnly: '打包',
   publish: '发布',
   refresh: '刷新',
   retry: '重试原请求',
@@ -67,7 +68,7 @@ const pluginManager: { [K in keyof typeof enUS]: (typeof enUS)[K] } = {
     INVALID_ARTIFACT: '归档无效，或包含凭据、链接及不支持的文件。',
     ARTIFACT_TOO_LARGE: '插件包超过 100 MB 上传限制。',
     MISSING_BUILD_OUTPUT:
-      '归档必须导出 dist 中实际存在的编译文件，请检查 files 和 publishConfig.exports。',
+      '归档必须包含全部导出文件，运行时入口需为 JavaScript。请先编译 TypeScript 源码，并检查 files 和 publishConfig.exports。',
     PRIVATE_PACKAGE:
       '归档中的插件为私有包，请将 private 设为 false 后重新打包再发布。',
     AUTHENTICATION_FAILED:

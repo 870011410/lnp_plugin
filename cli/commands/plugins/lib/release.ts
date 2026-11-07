@@ -33,8 +33,6 @@ export default class ReleaseCommand extends AppCommand {
           (item) => item.id === input.pluginId,
         );
         if (!plugin) throw new PluginManagerError('PLUGIN_NOT_FOUND');
-        if (action === 'pack' && !plugin.canBuild)
-          throw new PluginManagerError('BUILD_SCRIPT_REQUIRED');
         if (dryRun) {
           this.setStatus('success-noop');
           this.log(JSON.stringify({ ...input, registry: config.registry }));
