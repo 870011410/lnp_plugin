@@ -20,3 +20,4 @@ coverage/
 /.claude/skills/
 /.agent-annotations/
 *.log
+.idea
