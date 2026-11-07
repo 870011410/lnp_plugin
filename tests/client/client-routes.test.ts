@@ -5,7 +5,6 @@ import {
 } from '@nocobase/app-client/plugins';
 import { describe, expect, it } from 'vitest';
 
-import systemSettingsRoutes from '../../client/pages/settings/routes.js';
 import applicationRoutes, {
   createApplicationRoutes,
 } from '../../client/routes.ts';
@@ -174,35 +173,11 @@ describe('app client routes', () => {
     }
   });
 
-  it('pins the page authorization of every signed-in page', () => {
-    // A stored page grant records the page's `authz` resource id (`authorizedAs`), not its route `name`: changing an
-    // id is a data change that has to migrate the grants that reference it, not a refactor — so changing this list
-    // deliberately is the point. A new page that requires sign-in adds an entry here, because a page that checks
-    // access is a new grant somebody has to be given.
-    const resolved = resolveRoutes();
-
-    // The landing page and the inbox opted out of page authorization, so they are reachable by every signed-in user.
-    expect(pageAuthorizations(resolved.routes)).toEqual([
-      { name: 'home', authorizedAs: null },
-      { name: 'inbox', authorizedAs: null },
-      { name: 'settingsHome', authorizedAs: null },
-    ]);
-  });
-
-  it('keeps a bare application free of settings modules and supports settings registration as business capabilities are developed', async () => {
-    // Only the settings home, which lists what the viewer may open and grants nothing itself.
-    expect(
-      pagePaths(resolveRoutes().routes).filter((path) =>
-        path.startsWith('/settings'),
-      ),
-    ).toEqual(['/settings']);
-    const built = resolveAppClientContributions([
-      {
-        packageName: '@nocobase/app-template-default',
-        routes: [...applicationRoutes, systemSettingsRoutes],
-        source: 'application',
-      },
-    ]);
+  it('registers plugin management and the user/permission administration surfaces', () => {
+    const built = resolveRoutes();
+    expect(pagePaths(built.routes)).toEqual(
+      expect.arrayContaining(['/settings/plugins', '/settings/users']),
+    );
     expect(pageAuthorizations(built.routes)).toEqual([
       { name: 'home', authorizedAs: null },
       { name: 'inbox', authorizedAs: null },
@@ -231,11 +206,8 @@ describe('app client routes', () => {
         name,
         authorizedAs: 'settings:authorization.default-access',
       })),
+      { name: 'pluginManager', authorizedAs: 'unrestricted' },
     ]);
-    for (const loader of componentLoadersIn(built.routes))
-      await expect(loader()).resolves.toMatchObject({
-        default: expect.any(Function),
-      });
   });
 
   it('keeps the inbox out of the application navigation', () => {

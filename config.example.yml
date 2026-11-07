@@ -50,6 +50,13 @@ client:
     # defaultColorScheme: system # light | dark | system
     # defaultTheme: compact # ID from client/theme/theme-presets.ts
 
+# Local source plugin management. Use an npm hosted repository to publish, and a group to download.
+# LNP_PLUGIN_REGISTRY / LNP_PLUGIN_DOWNLOAD_REGISTRY override these; inject npm Bearer tokens with
+# LNP_PLUGIN_NPM_TOKEN, or run npm login as the application server user. See docs/plugin-manager.md.
+pluginManager:
+  registry: http://192.168.20.172:8081/repository/lnp_nocobase_plugin/
+  downloadRegistry: http://192.168.20.172:8081/repository/lnp-plugin/
+
 users:
   # The first administrator, created only when seeding an empty user table. Changing these values later does not
   # reset an existing account. Replace the password before exposing the application. INITIAL_ADMIN_USERNAME,

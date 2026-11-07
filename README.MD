@@ -1,5 +1,7 @@
 # NocoBase 3 Application
 
+本应用已提供“系统设置 → 系统 → 插件管理”，支持自开发 NocoBase 3 插件的构建、打包、下载和发布到 Nexus。使用方式、仓库配置及认证见[插件管理指南](docs/plugin-manager.md)。
+
 A full-stack NocoBase 3 application. The server runs on `@nocobase/app-server` and the browser client is React with shadcn/ui and Tailwind CSS.
 
 You own everything in this directory. Add pages, API routes, database tables, and business logic directly here — this is your application's source code, not a framework you extend from the outside.

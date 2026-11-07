@@ -3,6 +3,8 @@ import { readAppClientRuntimeConfig } from '@nocobase/app-client/runtime';
 import { includeNotificationTemplateRoutes } from './pages/settings/notification-routes.js';
 import { Home } from 'lucide-react';
 import settingsShellRoutes from './pages/settings/shell-routes.js';
+import systemSettingsRoutes from './pages/settings/routes.js';
+import pluginManagerRoutes from './pages/settings/plugin-manager/routes.js';
 import {
   defineAppRoutes,
   type AppClientRouteContribution,
@@ -75,7 +77,7 @@ export function createApplicationRoutes(
 ): readonly AppClientRouteContribution[] {
   const config = createAppClientConfig({ rawConfig });
   return includeNotificationTemplateRoutes(
-    [appRoutes, settingsShellRoutes],
+    [appRoutes, settingsShellRoutes, systemSettingsRoutes, pluginManagerRoutes],
     config.get<boolean>('notificationTemplates.invitationConfigured') === true,
   );
 }
