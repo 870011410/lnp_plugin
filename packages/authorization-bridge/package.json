@@ -1,0 +1,27 @@
+{
+  "name": "@lifewit/app-plugin-authorization-bridge",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    "./server": {
+      "types": "./server/index.d.ts",
+      "import": "./server/index.js"
+    }
+  },
+  "files": [
+    "server",
+    "skills",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@nocobase/app-server": "^3.0.0-beta.2",
+    "@nocobase/app-plugin-authentication": "^2.0.0-beta.12",
+    "@nocobase/app-plugin-authorization": "^1.0.0-beta.30",
+    "hono": "^4.13.2",
+    "zod": "^4.6.5"
+  }
+}
