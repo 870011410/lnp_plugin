@@ -4,7 +4,7 @@
 
 接口：`GET <应用路径>/api/authorizationBridge/metadata`。需要登录及 `settings:authorization.permission-sets/read` 权限，匿名返回 401，无权限返回 403。
 
-版本说明：插件声明支持 `@nocobase/app-server ^3.0.0-beta.2`，本仓库为 `5.0.0-beta.1`，peer 声明不兼容。
+版本说明：所有 peer dependencies 均不限制版本范围；实际 API 兼容性仍需在目标环境验证。
 
 ## AI 接入提示语
 
@@ -84,8 +84,8 @@ export default authorizationBridge;
 ## 验证
 
 ```bash
-pnpm exec vitest run tests/server/authorization-bridge.test.ts tests/client/page-permission-titles.test.ts
-pnpm exec eslint server/authorization-bridge.ts server/plugins.ts tests/server/authorization-bridge.test.ts --max-warnings 0
+pnpm exec vitest run tests/server/lifewit-app-plugin-authorization-bridge.test.ts tests/client/page-permission-titles.test.ts
+pnpm exec eslint server/lifewit-app-plugin-authorization-bridge.ts server/plugins.ts tests/server/lifewit-app-plugin-authorization-bridge.test.ts --max-warnings 0
 ```
 
 确认桥接返回的页面 ID、标题和双语文案正确。生产环境重新构建、部署后，由主应用刷新子应用元数据。

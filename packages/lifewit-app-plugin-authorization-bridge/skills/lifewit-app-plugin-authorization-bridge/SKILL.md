@@ -1,5 +1,5 @@
 ---
-name: nocobase-authorization-bridge
+name: lifewit-app-plugin-lifewit-app-plugin-authorization-bridge
 description: Connect a NocoBase 3 child application to the main application's remote permission management without moving its authorization database.
 ---
 

@@ -18,10 +18,10 @@
     "README.md"
   ],
   "peerDependencies": {
-    "@nocobase/app-server": "^3.0.0-beta.2",
-    "@nocobase/app-plugin-authentication": "^2.0.0-beta.12",
-    "@nocobase/app-plugin-authorization": "^1.0.0-beta.30",
-    "hono": "^4.13.2",
-    "zod": "^4.6.5"
+    "@nocobase/app-server": "*",
+    "@nocobase/app-plugin-authentication": "*",
+    "@nocobase/app-plugin-authorization": "*",
+    "hono": "*",
+    "zod": "*"
   }
 }
