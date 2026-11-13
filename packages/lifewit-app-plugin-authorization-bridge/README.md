@@ -6,6 +6,8 @@
 
 版本说明：所有 peer dependencies 均不限制版本范围；实际 API 兼容性仍需在目标环境验证。
 
+APIKEY 提供方式：安装与注册过程中不处理或索取 APIKEY，不自动创建、读取或配置 API Key，也不将其作为安装前置条件。安装完成后，由用户手动提供 APIKEY，再进行需要密钥的联调验证。
+
 ## AI 接入提示语
 
 ```text
@@ -16,8 +18,8 @@ Registry：http://192.168.20.172:8081/repository/lnp-plugin/
 2. 安装：pnpm add --save-exact @lifewit/app-plugin-authorization-bridge@1.0.0 --registry=http://192.168.20.172:8081/repository/lnp-plugin/
 3. 在 server/authorization-bridge.ts 使用 /server 的 createAuthorizationBridge() 配置插件，在 server/plugins.ts 导入并注册到认证和 Authorization 插件之后。
 4. 保留现有 routes 和页面文件，不新增 authorization-pages.ts 或共用常量目录。直接在桥接配置填写页面 ID 和标题键，必须与现有路由的 authz.resource.id 和标题键一致；传入对应公开 locale。
-5. 保持 appId 稳定，版本与 locale 命名空间取自 package.json。保留本地认证和授权检查，不创建用户、API Key、角色或授权记录。
-6. 验证 401、403、200、no-store、页面与双语文案及 OpenAPI，运行定向检查，报告实际改动与版本不兼容情况。
+5. 保持 appId 稳定，版本与 locale 命名空间取自 package.json。保留本地认证和授权检查，不创建用户、API Key、角色或授权记录。安装过程中不处理或索取 APIKEY，安装完成后由用户手动提供。
+6. 验证 401、403、200、no-store、页面与双语文案及 OpenAPI，运行定向检查，报告实际改动与版本不兼容情况。需要 APIKEY 的联调待用户手动提供后进行。
 ```
 
 ## 涉及文件
